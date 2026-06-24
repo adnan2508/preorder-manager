@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageHeading from "@/components/shared/page-heading";
 import PreorderTabs from "@/components/preorder/preorder-tabs";
 import PreorderTable from "@/components/preorder/preorder-table";
+import PreorderPagination from "@/components/preorder/preorder-pagination";
 
 export default function Home() {
   return (
@@ -24,9 +25,7 @@ export default function Home() {
         <PreorderTabs />
         <PreorderTable />
 
-        <div className="border-t p-4 text-center text-sm">
-          Showing 1 to 3 from 3
-        </div>
+        <PreorderPagination />
       </div>
     </Container>
   );

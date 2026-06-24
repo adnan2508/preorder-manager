@@ -6,6 +6,7 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 export default function PreorderTable() {
   const [items, setItems] = useState(preorders);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const toggleStatus = (id: string) => {
     setItems((prev) =>
@@ -17,12 +18,37 @@ export default function PreorderTable() {
     );
   };
 
+  const handleRowSelection = (id: string) => {
+    setSelectedRows((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
+  const allSelected =
+    items.length > 0 &&
+    selectedRows.length === items.length;
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setSelectedRows([]);
+    } else {
+      setSelectedRows(items.map((item) => item.id));
+    }
+  };
+
   return (
     <table className="w-full">
       <thead>
         <tr className="border-b bg-gray-50 text-left">
           <th className="p-3">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={handleSelectAll}
+              className="h-4 w-4 accent-black"
+            />
           </th>
 
           <th>Name</th>
@@ -39,10 +65,18 @@ export default function PreorderTable() {
         {items.map((item) => (
           <tr
             key={item.id}
-            className="border-b hover:bg-gray-50"
+            className={`border-b hover:bg-gray-100 ${selectedRows.includes(item.id)
+                ? "bg-gray-50"
+                : ""
+              }`}
           >
             <td className="p-3">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={selectedRows.includes(item.id)}
+                onChange={() => handleRowSelection(item.id)}
+                className="h-4 w-4 accent-black"
+              />
             </td>
 
             <td className="font-medium">{item.name}</td>
@@ -55,16 +89,14 @@ export default function PreorderTable() {
               <button
                 type="button"
                 onClick={() => toggleStatus(item.id)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  item.active ? "bg-black" : "bg-gray-300"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${item.active ? "bg-black" : "bg-gray-300"
+                  }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    item.active
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${item.active
+                    ? "translate-x-6"
+                    : "translate-x-1"
+                    }`}
                 />
               </button>
             </td>
