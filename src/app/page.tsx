@@ -1,6 +1,8 @@
 import Container from "@/components/shared/container";
 import "./globals.css";
 import PageHeading from "@/components/shared/page-heading";
+import PreorderTabs from "@/components/preorder/preorder-tabs";
+import PreorderTable from "@/components/preorder/preorder-table";
 
 export default function Home() {
   return (
@@ -14,9 +16,12 @@ export default function Home() {
         }
       />
 
-      <div className="border rounded-xl overflow-hidden">
-        <div className="p-10 text-center text-gray-500">
-          Table Coming Soon
+      <div className="border rounded-xl overflow-visible bg-white">
+        <PreorderTabs />
+        <PreorderTable />
+
+        <div className="border-t p-4 text-center text-sm">
+          Showing 1 to 3 from 3
         </div>
       </div>
     </Container>
