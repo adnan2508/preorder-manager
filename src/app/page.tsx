@@ -1,5 +1,6 @@
 import Container from "@/components/shared/container";
 import "./globals.css";
+import Link from "next/link";
 import PageHeading from "@/components/shared/page-heading";
 import PreorderTabs from "@/components/preorder/preorder-tabs";
 import PreorderTable from "@/components/preorder/preorder-table";
@@ -10,9 +11,12 @@ export default function Home() {
       <PageHeading
         title="Preorders"
         action={
-          <button className="bg-black text-white px-4 py-2 rounded-md">
+          <Link
+            href="/preorders/new"
+            className="bg-black text-white px-4 py-2 rounded-md"
+          >
             Create Preorder
-          </button>
+          </Link>
         }
       />
 
