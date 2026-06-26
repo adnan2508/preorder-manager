@@ -6,4 +6,5 @@ export interface PreorderTableItem {
   startsAt: string;
   endsAt: string | null;
   active: boolean;
+  createdAt: string;
 }

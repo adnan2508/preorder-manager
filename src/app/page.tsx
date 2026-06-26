@@ -3,12 +3,41 @@ import "./globals.css";
 import Link from "next/link";
 import PageHeading from "@/components/shared/page-heading";
 import PreorderTabs from "@/components/preorder/preorder-tabs";
-import PreorderTable from "@/components/preorder/preorder-table";
-import PreorderPagination from "@/components/preorder/preorder-pagination";
 import { getPreorders } from "@/lib/preorders";
 
-export default async function Home() {
-  const preorders = await getPreorders();
+export const dynamic = "force-dynamic";
+
+interface HomeProps {
+  searchParams: Promise<{
+    filter?: string;
+    sort?: string;
+    direction?: string;
+    page?: string;
+  }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const resolvedSearchParams = await searchParams;
+
+  const filter =
+    resolvedSearchParams.filter === "active" || resolvedSearchParams.filter === "inactive"
+      ? resolvedSearchParams.filter
+      : "all";
+
+  const sort = ["name", "createdAt", "startsAt", "endsAt"].includes(resolvedSearchParams.sort ?? "")
+    ? (resolvedSearchParams.sort as "name" | "createdAt" | "startsAt" | "endsAt")
+    : "createdAt";
+
+  const direction = resolvedSearchParams.direction === "asc" ? "asc" : "desc";
+  const page = Number(resolvedSearchParams.page ?? 1);
+
+  const { preorders, totalCount } = await getPreorders({
+    filter,
+    sort,
+    direction,
+    page,
+    pageSize: 8,
+  });
 
   return (
     <Container>
@@ -24,12 +53,10 @@ export default async function Home() {
         }
       />
 
-      <div className="border rounded-xl overflow-visible bg-white">
-        <PreorderTabs />
-        <PreorderTable preorders={preorders}/>
-
-        <PreorderPagination />
-      </div>
+      <PreorderTabs
+        preorders={preorders}
+        totalItems={totalCount}
+      />
     </Container>
   );
 }

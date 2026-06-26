@@ -144,7 +144,7 @@ const handleDelete = (id: string) => {
                 <button
                   type="button"
                   onClick={() => router.push(`/preorders/${item.id}`)}
-                  className="bg-white rounded-xl p-2 border border-gray-300"
+                  className="bg-white rounded-xl p-2 border border-gray-300 cursor-pointer"
                 >
                   <FiEdit size={18} />
                 </button>
@@ -152,7 +152,7 @@ const handleDelete = (id: string) => {
                 <button
                 onClick={() => handleDelete(item.id)}
                 disabled={isPending} 
-                className="bg-white rounded-xl p-2 border border-gray-300">
+                className="bg-white rounded-xl p-2 border border-gray-300 cursor-pointer">
                   <FiTrash2 size={18} />
                 </button>
               </div>
