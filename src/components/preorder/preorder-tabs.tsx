@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BiSortAlt2 } from "react-icons/bi";
+import { FiLoader } from "react-icons/fi";
 import type { PreorderTableItem } from "@/types/preorder";
 import PreorderTable from "./preorder-table";
 import PreorderPagination from "./preorder-pagination";
@@ -24,7 +25,12 @@ export default function PreorderTabs({
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [open, setOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const pageSize = 8;
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, [preorders, totalItems, pathname, searchParams]);
 
     const resolveFilter = (value: string | null) => {
         if (value === "active" || value === "inactive") {
@@ -86,6 +92,7 @@ export default function PreorderTabs({
         const query = params.toString();
         const nextUrl = query ? `${pathname}?${query}` : pathname;
 
+        setIsLoading(true);
         router.push(nextUrl, { scroll: false });
     };
 
@@ -220,13 +227,24 @@ export default function PreorderTabs({
                 </div>
             </div>
 
-            <PreorderTable preorders={preorders} />
-            <PreorderPagination
-                totalItems={totalItems}
-                page={page}
-                pageSize={pageSize}
-                onPageChange={handlePageChange}
-            />
+            {isLoading ? (
+                <div className="flex min-h-64 items-center justify-center border-t">
+                    <div className="flex items-center gap-3 text-sm font-medium text-gray-600">
+                        <FiLoader className="h-5 w-5 animate-spin" />
+                        Loading preorders...
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <PreorderTable preorders={preorders} />
+                    <PreorderPagination
+                        totalItems={totalItems}
+                        page={page}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
+                    />
+                </>
+            )}
         </div>
     );
 }
