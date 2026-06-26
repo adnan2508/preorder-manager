@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { PreorderTableItem } from "@/types/preorder";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import {  togglePreorderStatus, deletePreorder, } from "../../actions/preorder.actions";
@@ -17,6 +18,7 @@ export default function PreorderTable({
   const [items, setItems] = useState(preorders);
   const [isPending, startTransition] = useTransition();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const router = useRouter();
 
   const toggleStatus = (id: string) => {
   startTransition(async () => {
@@ -139,7 +141,11 @@ const handleDelete = (id: string) => {
 
             <td>
               <div className="flex gap-3">
-                <button className="bg-white rounded-xl p-2 border border-gray-300">
+                <button
+                  type="button"
+                  onClick={() => router.push(`/preorders/${item.id}`)}
+                  className="bg-white rounded-xl p-2 border border-gray-300"
+                >
                   <FiEdit size={18} />
                 </button>
 

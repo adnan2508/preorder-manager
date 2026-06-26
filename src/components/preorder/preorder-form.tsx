@@ -3,9 +3,29 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { createPreorder, updatePreorder } from "../../actions/preorder.actions";
+import SubmitButton from "@/components/shared/submit-button";
+import { PreorderWhen } from "@prisma/client";
 
-export default function PreorderForm() {
-    const [isActive, setIsActive] = useState(true);
+interface PreorderFormProps {
+    preorder?: {
+        id: string;
+        name: string;
+        products: number;
+        preorderWhen: PreorderWhen;
+        startsAt: string;
+        endsAt: string;
+        active: boolean;
+    };
+}
+
+export default function PreorderForm({
+    preorder,
+}: PreorderFormProps) {
+    const [isActive, setIsActive] = useState(
+        preorder?.active ?? true
+    );
+    const formAction = preorder ? updatePreorder : createPreorder;
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -20,18 +40,27 @@ export default function PreorderForm() {
                 </Link>
 
                 <div className="flex gap-3">
-                    <button className="border rounded-lg px-5 py-2">
+                    <Link
+                        href="/"
+                        className="border rounded-lg px-5 py-2"
+                    >
                         Cancel
-                    </button>
+                    </Link>
 
-                    <button className="bg-black text-white rounded-lg px-5 py-2">
+                    <SubmitButton
+                        form="preorder-form"
+                        className="bg-black text-white rounded-lg px-5 py-2"
+                    >
                         Save changes
-                    </button>
+                    </SubmitButton>
                 </div>
             </div>
 
             {/* Card */}
-            <div className="border rounded-2xl bg-white overflow-hidden">
+            <form
+                id="preorder-form"
+                action={formAction}
+                className="border rounded-2xl bg-white overflow-hidden">
                 <div className="p-6 border-b">
                     <h2 className="text-xl font-semibold">
                         Preorder details
@@ -57,6 +86,8 @@ export default function PreorderForm() {
                         </div>
 
                         <input
+                            name="name"
+                            defaultValue={preorder?.name}
                             className="border rounded-lg px-4 py-3"
                             placeholder="Enter preorder name"
                         />
@@ -75,10 +106,11 @@ export default function PreorderForm() {
                         </div>
 
                         <input
+                            name="products"
                             type="number"
                             min={1}
                             className="border rounded-lg px-4 py-3 w-40"
-                            defaultValue={1}
+                            defaultValue={preorder?.products ?? 1}
                         />
                     </div>
 
@@ -94,9 +126,21 @@ export default function PreorderForm() {
                             </p>
                         </div>
 
-                        <select className="border rounded-lg px-4 py-3">
-                            <option>regardless-of-stock</option>
-                            <option>out-of-stock</option>
+                        <select
+                            name="preorderWhen"
+                            defaultValue={
+                                preorder?.preorderWhen ??
+                                PreorderWhen.REGARDLESS_OF_STOCK
+                            }
+                            className="border rounded-lg px-4 py-3"
+                        >
+                            <option value="REGARDLESS_OF_STOCK">
+                                Regardless of stock
+                            </option>
+
+                            <option value="OUT_OF_STOCK">
+                                Out of stock
+                            </option>
                         </select>
                     </div>
 
@@ -113,7 +157,9 @@ export default function PreorderForm() {
                         </div>
 
                         <input
+                            name="startsAt"
                             type="datetime-local"
+                            defaultValue={preorder?.startsAt}
                             className="border rounded-lg px-4 py-3"
                         />
                     </div>
@@ -131,7 +177,9 @@ export default function PreorderForm() {
                         </div>
 
                         <input
+                            name="endsAt"
                             type="datetime-local"
+                            defaultValue={preorder?.endsAt}
                             className="border rounded-lg px-4 py-3"
                         />
                     </div>
@@ -157,30 +205,42 @@ export default function PreorderForm() {
                             >
                                 <span
                                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isActive
-                                            ? "translate-x-6"
-                                            : "translate-x-1"
+                                        ? "translate-x-6"
+                                        : "translate-x-1"
                                         }`}
                                 />
                             </button>
 
-                            <span className="text-gray-700">
-                                {isActive ? "Active" : "Inactive"}
-                            </span>
+                            <input
+                                type="hidden"
+                                name="active"
+                                value={isActive ? "true" : "false"}
+                            />
+                            {preorder && (
+                                <input
+                                    type="hidden"
+                                    name="id"
+                                    value={preorder.id}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Buttons */}
                 <div className="border-t p-6 flex justify-end gap-3">
-                    <button className="border rounded-lg px-5 py-2">
+                    <Link
+                        href="/"
+                        className="border rounded-lg px-5 py-2"
+                    >
                         Cancel
-                    </button>
+                    </Link>
 
-                    <button className="bg-black text-white rounded-lg px-5 py-2">
+                    <SubmitButton className="bg-black text-white rounded-lg px-5 py-2">
                         Save changes
-                    </button>
+                    </SubmitButton>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
