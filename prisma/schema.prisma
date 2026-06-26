@@ -1,13 +1,26 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum PreorderWhen {
+  REGARDLESS_OF_STOCK
+  OUT_OF_STOCK
+}
+
+model Preorder {
+  id           String         @id @default(cuid())
+  name         String
+  products     Int
+  preorderWhen PreorderWhen
+  startsAt     DateTime
+  endsAt       DateTime?
+  active       Boolean        @default(true)
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }

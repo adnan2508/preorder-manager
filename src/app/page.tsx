@@ -5,8 +5,11 @@ import PageHeading from "@/components/shared/page-heading";
 import PreorderTabs from "@/components/preorder/preorder-tabs";
 import PreorderTable from "@/components/preorder/preorder-table";
 import PreorderPagination from "@/components/preorder/preorder-pagination";
+import { getPreorders } from "@/lib/preorders";
 
-export default function Home() {
+export default async function Home() {
+  const preorders = await getPreorders();
+
   return (
     <Container>
       <PageHeading
@@ -23,7 +26,7 @@ export default function Home() {
 
       <div className="border rounded-xl overflow-visible bg-white">
         <PreorderTabs />
-        <PreorderTable />
+        <PreorderTable preorders={preorders}/>
 
         <PreorderPagination />
       </div>

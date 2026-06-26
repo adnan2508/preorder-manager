@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { preorders } from "@/lib/mock-data";
+import { PreorderTableItem } from "@/types/preorder";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 
-export default function PreorderTable() {
+interface PreorderTableProps {
+  preorders: PreorderTableItem[];
+}
+
+export default function PreorderTable({
+  preorders,
+}: PreorderTableProps) {
+
   const [items, setItems] = useState(preorders);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
@@ -66,8 +73,8 @@ export default function PreorderTable() {
           <tr
             key={item.id}
             className={`border-b hover:bg-gray-100 ${selectedRows.includes(item.id)
-                ? "bg-gray-50"
-                : ""
+              ? "bg-gray-50"
+              : ""
               }`}
           >
             <td className="p-3">

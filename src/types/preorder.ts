@@ -1,4 +1,4 @@
-export type Preorder = {
+export interface PreorderTableItem {
   id: string;
   name: string;
   products: number;
@@ -6,4 +6,4 @@ export type Preorder = {
   startsAt: string;
   endsAt: string | null;
   active: boolean;
-};
+}
