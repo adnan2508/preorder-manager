@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { PreorderTableItem } from "@/types/preorder";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import {  togglePreorderStatus, deletePreorder, } from "../../actions/preorder.actions";
+import { useTransition } from "react";
 
 interface PreorderTableProps {
   preorders: PreorderTableItem[];
@@ -13,17 +15,43 @@ export default function PreorderTable({
 }: PreorderTableProps) {
 
   const [items, setItems] = useState(preorders);
+  const [isPending, startTransition] = useTransition();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const toggleStatus = (id: string) => {
+  startTransition(async () => {
+    await togglePreorderStatus(id);
+
     setItems((prev) =>
       prev.map((item) =>
         item.id === id
-          ? { ...item, active: !item.active }
+          ? {
+              ...item,
+              active: !item.active,
+            }
           : item
       )
     );
-  };
+  });
+};
+
+const handleDelete = (id: string) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this preorder?"
+  );
+
+  if (!confirmed) return;
+
+  startTransition(async () => {
+    await deletePreorder(id);
+
+    setItems((prev) => prev.filter((item) => item.id !== id));
+
+    setSelectedRows((prev) =>
+      prev.filter((selectedId) => selectedId !== id)
+    );
+  });
+};
 
   const handleRowSelection = (id: string) => {
     setSelectedRows((prev) =>
@@ -95,6 +123,7 @@ export default function PreorderTable({
             <td>
               <button
                 type="button"
+                disabled={isPending}
                 onClick={() => toggleStatus(item.id)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${item.active ? "bg-black" : "bg-gray-300"
                   }`}
@@ -114,7 +143,10 @@ export default function PreorderTable({
                   <FiEdit size={18} />
                 </button>
 
-                <button className="bg-white rounded-xl p-2 border border-gray-300">
+                <button
+                onClick={() => handleDelete(item.id)}
+                disabled={isPending} 
+                className="bg-white rounded-xl p-2 border border-gray-300">
                   <FiTrash2 size={18} />
                 </button>
               </div>
