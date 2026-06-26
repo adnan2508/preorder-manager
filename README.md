@@ -21,11 +21,7 @@ This project uses SQLite via Prisma.
 
 Create a local environment file if it does not already exist:
 
-```bash
-copy .env.example .env
-```
-
-If there is no `.env.example` file, create a new `.env` file with:
+create a new `.env` file with:
 
 ```env
 DATABASE_URL="file:./dev.db"
